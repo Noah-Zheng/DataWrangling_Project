@@ -11783,35 +11783,25 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>When using <code>tweet = api.get_status('892420643555336193')</code>, it will return the text rather than the JSON. When change the tweet_mode to extended as <code>tweet2 = api.get_status('892420643555336193', tweet_mode= 'extended')</code>, it will return JSON as needed.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>After melt the dog stage columns and merge with archive_clean, number of rows is 2370, an addition of 14 rows. Where do these 14 rows come from? After check dog_stage_data, find out there are 14 tweet_id duplicates because some tweet_ids have more than one value in dog_stage columns. Those should be dropped from the archive_clean.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>When solving the tidiness issue concerning the prejection table, I started with the method in the <a href="https://github.com/pandas-dev/pandas/issues/17676">link</a>, but faild with ValueError (setting an array element with a sequence). Cannot solve the problem. Tried to  melt the three groups one by one. One issue came up when merge these three melted table is the result table is much larger than the intented size which should be 6225. After look into the individual melted table, there are duplicates which will result in an increase in the rows when merge with another table with duplicates. Cannot solve this problem either. Find another method on <a href="https://stackoverflow.com/questions/38862832/pandas-melt-several-groups-of-columns-into-multiple-target-columns-by-name">link</a> which is <code>pd.wide_to_long</code>. At first, cannot figure out how stubnames and sep works. After changing the name as the example in the stakoverflow post, it worked. I realised that the stubnames should be related to the column names in the table. The result table is the result I wanted. However, one column indicating which prediction it is should be added in the table.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>When convert multiple columns from float to int, I tried to use read_csv assign dtype to the columns, failed as error:Cannot cast array from dtype('float64') to dtype('int64') according to the rule 'safe'. Caanot figure out.</p>
-<p>After some research, this <a href="http://pandas.pydata.org/pandas-docs/stable/gotchas.html#support-for-integer-na">Support for Integer NA Problem</a> came up. So, just leave it as float. For the same reason, when merge retweet and favorite count table with archive, data type of retweet_count and favorite_count changes from int to float. After droping rows with null value, use <code>astype</code> to convert to int.</p>
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p><a href="https://twitter.com/dog_rates">WeRateDogs</a> is the most popular twitter rating dogs.</p>
+<p>The WeRateDogs Twitter archive is provided for Udacity students to practice data wrangling skills. The archive includs information of tweet id, timestamp, text, rating_numerator, rating_demoninator etc. In addtion, a file of image prediction is provided and can be downloaded programmatically using <code>requests</code>.</p>
+<h2 id="Steps-taken">Steps taken<a class="anchor-link" href="#Steps-taken">&#182;</a></h2><h3 id="Data-Collecting">Data Collecting<a class="anchor-link" href="#Data-Collecting">&#182;</a></h3><p>The first part of data wrangling is to collect data.<br>
+The twitter_archive_enhanced.csv file is downloaded manually.</p>
+<p>The image_predictions.tsv file is downloaded programmatically using the <code>Requests</code> package. Using <code>requests.get()</code> to save the response to a variable and then use <code>write</code> function to store the content of the response to a file.</p>
+<p>The last data required is each tweet's JSON data. A twitter developer account is created to use Twitter's API to query each tweet in the archive file to extract JSON data used for later analysis. <code>tweepy</code> is used to conncet to twitter API.  A list of tweet_id is extracted from the archive file and is passed to <code>get_status()</code> function to get the data. At first, <code>tweet = api.get_status(t_id)</code> returned the tweet text rather than the JSON data required. The problem is solved by adding <code>._json</code> to the end and store the data in a variable named tweet. Then use <code>json</code> library and <code>open</code> command to store all the JSON data in a file. In this project, only information about retweet count and favorite count is extracted from the JSON data. Some other information such as timestamp of favorite would be usefull when exploring the trend of favorite during a period.</p>
+<p>After the dataframe including the tweet_id, retweet_count and favorite_count is created, the dataframe is save as a csv fiel using <code>dataframe.to_csv()</code> function.</p>
+<h3 id="Data-Assessing">Data Assessing<a class="anchor-link" href="#Data-Assessing">&#182;</a></h3><p>The second part is to assess the data collected. 
+All the data are imported using <code>panda.read_csv()</code> function. 
+Visual assessment and programmactical assessment are used to identify several quality and tidiness issues.</p>
+<h4 id="Visual-Assessment">Visual Assessment<a class="anchor-link" href="#Visual-Assessment">&#182;</a></h4><p>Microsoft Excel and jupyter notebook were used to open files to do visual assessment. 
+One tidiness issue that the dog stage should be structed using one column was easily noticed doing the visual assessment. One quality came up when some of the dog names are 'a', 'such' etc. As this information is not important in my analysis, it is ingonred. Some of the issues like incorrected extracted rating_numerating are pointed by the reviewer and checked in the excel.</p>
+<h4 id="Programmatic-Assessment">Programmatic Assessment<a class="anchor-link" href="#Programmatic-Assessment">&#182;</a></h4><p>The majority of the issues is found using programmatic assessment: the data type issues, the rating_denominator with value '0' issue, the completeness issue ect. Mainly used functions are <code>pandas.DataFrame.info()</code>, <code>pandas.DataFrame.describe()</code>, <code>duplicated()</code> etc.</p>
+<h3 id="Data-Cleaning">Data Cleaning<a class="anchor-link" href="#Data-Cleaning">&#182;</a></h3><p>After documenting the issues comes the last part of data wrangling, cleaning the data. 
+The tidiness issues are dealt with firstly and quality issues later. Afer the cleaning part is done, cleaned data is stored in twitter_archive_master.csv.</p>
+<p>One major problem is to melt the related columns in prediction table.<br>
+When solving the tidiness issue concerning the prejection table, I started with the method in the <a href="https://github.com/pandas-dev/pandas/issues/17676">link</a>, but faild with ValueError (setting an array element with a sequence). Cannot solve the problem. Tried to  melt the three groups one by one. One issue came up when merge these three melted table is the result table is much larger than the intented size which should be 6225. After look into the individual melted table, there are duplicates which will result in an increase in the rows when merge with another table with duplicates. Cannot solve this problem either. Find another method on <a href="https://stackoverflow.com/questions/38862832/pandas-melt-several-groups-of-columns-into-multiple-target-columns-by-name">link</a> which is <code>pd.wide_to_long</code>. At first, cannot figure out how stubnames and sep works. After changing the name as the example in the stakoverflow post, it worked. I realised that the stubnames should be related to the column names in the table. The result table is the result I wanted. However, one column indicating which prediction it is should be added in the table.</p>
+<p>The major problem in solving the quality issues is regular expression. This pattern <code>'(\d+\.?\d?/\d+)'</code> was firstly used to extract the rating information from the text. After visually checking the text, <code>'(\d+\.?\d?/10)'</code> is better.</p>
+<h2 id="Data-Output">Data Output<a class="anchor-link" href="#Data-Output">&#182;</a></h2><p>After cleaning the data, the cleaned data is store in twitter_archive_master.csv file.</p>
 
 </div>
 </div>
