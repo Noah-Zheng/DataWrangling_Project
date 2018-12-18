@@ -11783,19 +11783,11 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://twitter.com/dog_rates">WeRateDogs</a> is the most popular twitter rating dogs.</p>
-<p>The WeRateDogs Twitter archive is provided for Udacity students to practice data wrangling skills. The archive includs information of tweet id, timestamp, text, rating_numerator, rating_demoninator etc. In addtion, a file of image prediction is provided and can be downloaded programmatically using <code>requests</code>.</p>
-<p>The first part of data wrangling is to collect data. 
-The twitter_archive_enhanced.csv file is downloaded manually and the the image_predictions.tsv file is downloaded programmatically. Twitter's API is used to query each tweet in the archive file to extract JSON data used for later analyse. In this project, only information about retweet count and favorite count is extracted from the JSON data. Some other information such as timestamp of favorite would be usefull when exploring the trend of favorite during a period.</p>
-<p>The second part is to assess the data collected.
-Visual assessment and programmactical assessment are used to identify several quality and tidiness issues.</p>
-<p>After documenting the issues comes the first part of data wrangling, cleaning the data. 
-The tidiness issues are dealt with firstly and quality issues later. Afer the cleaning part is done, cleaned data is stored in twitter_archive_master.csv.</p>
 <p>Some visualisation and observations.</p>
 <ol>
 <li>The following is a distribution of number of dogs of each rating between 7 and 15.
 <img src = 'Frequency of Rating_numerator.png'>
-The majority of dogs has the rating of 10, 11, 12. </li>
+This chart indicates that the majority of dogs are in the rating range of 10-12. </li>
 </ol>
 <ol>
 <li><p>In the following chart, dogs with higher rating is likely to have more favorite.
@@ -11803,6 +11795,17 @@ The majority of dogs has the rating of 10, 11, 12. </li>
 </li>
 <li><p>More favorite would likely result in more retweets as shown in the following chart.
 <img src = 'Relationship between Favorite and Retweet.png'></p>
+</li>
+<li><p>This bar chart tells us the top 5 most popular breeds.
+<img src = 'Top 5.png'>
+They are:</p>
+<ol>
+<li>Golden Retriever </li>
+<li>Labrador Retriever </li>
+<li>Pembroke </li>
+<li>Chihuahua </li>
+<li>Pug </li>
+</ol>
 </li>
 </ol>
 
